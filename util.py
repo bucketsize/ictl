@@ -31,7 +31,21 @@ def tmenu_select(omap):
         for k in omap.keys():
             f.write(k)
             f.write("\n")
-    sel = subprocess.check_output("fzf < /tmp/mxcmd.out", shell=True)
+    try:
+        sel = subprocess.check_output("fzf < /tmp/mxcmd.out", shell=True)
+    except: 
+        return None
     logger.info("tmenu_select: %s" % sel)
     return sel.decode().strip()
 
+def sh(cmd: [str]):
+    print("#sh: ", cmd)
+    subprocess.run(cmd, stdout=subprocess.PIPE)
+
+def mksh(cmd: [str]):
+    return lambda cmd: subprocess.run(cmd, stdout=subprocess.PIPE)
+
+def fork(cmd: [str]):
+    print("#fork: ", cmd)
+    subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    time.sleep(2)

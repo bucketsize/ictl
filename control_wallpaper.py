@@ -3,8 +3,6 @@ import math
 import random
 import os
 import subprocess
-import http.client
-import urllib.request
 
 import time
 import config 
@@ -17,9 +15,6 @@ rnd.seed(int(time.time()) + 19)
 Cfg = config.Cfg
 Home = os.getenv("HOME")            
 wlprs = Home + "/.wlprs/"
-pop_term = config.build_pop_term
-menu_sel = config.build_menu_sel
-ctrl_bin = config.build_ctrl_bin
 
 urlr = {
     "bing": {
@@ -81,4 +76,4 @@ def tmenu_set_wallpaper():
     subprocess.call(["feh", "--bg-scale", wps[sel]])
 
 def dmenu_set_wallpaper():
-    subprocess.run(["sh", pop_term(ctrl_bin("tmenu_set_wallpaper"))])
+    subprocess.run(["sh", config.pop_term(config.ctrl_bin("tmenu_set_wallpaper"))])

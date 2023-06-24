@@ -6,19 +6,15 @@ logger = logging.getLogger()
 
 Home = os.getenv("HOME")
 Cfg = {
-    "termopts" : {
-        "st"    : '-f monospace:size=10',
-        "stterm": '-f monospace:size=10 -g 108x24'
-    },
-    "pop_termopts" : {
-        "alacritty": '--class Popeye -o window.dimensions.columns=64 -o window.dimensions.lines=16 -e',
-        "xterm": '-name Popeye -geom 64x16 -e',
-        "urxvt": '-name Popeye -geometry 64x16 -e',
-        "urxvtc": '-name Popeye -geometry 64x16 -e',
-        "st": '-c Popeye -g 64x16 -e',
-        "stterm": '-c Popeye -g 64x16 -e',
-        "qterminal": '--profile Popeye -e',
-        "foot     ": '--app-id Popeye --title Popeye --window-size-chars 64x16'
+    "pop_terms" : {
+        "alacritty": ['/usr/bin/alacritty', '--class', 'Popeye', '-o', 'window.dimensions.columns=64', '-o', 'window.dimensions.lines=16', '-e'],
+        'xterm': ['/usr/bin/xterm', '-name', 'Popeye', '-geom', '64x16', '-e'],
+        'urxvt': ['/usr/bin/urxvt', '-name', 'Popeye', '-geometry', '64x16', '-e'],
+        'urxvtc': ['/usr/bin/urxvtc', '-name', 'Popeye', '-geometry', '64x16', '-e'],
+        'st': ['/usr/bin/st', '-c', 'Popeye', '-g', '64x16', '-f', 'monospace:size=10', '-e'],
+        'stterm': ['/usr/bin/stterm', '-c', 'Popeye', '-g', '64x16', '-f', 'monospace:size=10', '-e'],
+        'qterminal': ['/usr/bin/qterminal', '--profile', 'Popeye', '-e'],
+        'foot': ['/usr/bin/foot', '--app-id', 'Popeye', '--title', 'Popeye', '--window-size-chars', '64x16']
     }
 }
 
@@ -42,22 +38,12 @@ def get_renderer():
         print("get_renderer:", "xorg")
         return "xorg"
 
-def get_pop_term():
-    return Cfg["pop_term"][get_renderer()]
+def pop_term(cmd: [str]) -> [str]:
+    pt = Cfg["pop_term"][get_renderer()]
+    print("pop_term:", pt)
+    if pt not in Cfg["pop_terms"]:
+        raise f"pop_term {pt} not defined in config.pop_terms"
+    return Cfg['pop_terms'][pt] + cmd
 
-def build_pop_term(cmd):
-    pop_term = get_pop_term()
-    if pop_term not in Cfg["termopts"]:
-        Cfg["termopts"][pop_term] = ''
-    return f"{pop_term} {Cfg['termopts'][pop_term]} {Cfg['pop_termopts'][pop_term]} {cmd}"
-
-def build_term(t):
-    if t not in Cfg["termopts"]:
-        Cfg["termopts"][t] = ''
-    return f"{t} {Cfg['termopts'][t]}"
-
-def build_menu_sel(lst):
-    return f"{lst} | {Cfg['menu_sel']} "
-
-def build_ctrl_bin(cmd):
-    return f"{Cfg['ctrl_bin']} {cmd} "
+def ctrl_bin(cmd: [str]) -> [str]:
+    return Cfg['ctrl_bin'] + cmd

@@ -6,15 +6,13 @@ import subprocess
 import json
 import logging
 import config
+import util
 
 Cfg = config.Cfg
 logger = logging.getLogger()
 
 USER = os.getenv("USER")
 appcache = "/tmp/appcache.mxctl." + USER + ".json"
-pop_term = config.build_pop_term
-menu_sel = config.build_menu_sel
-ctrl_bin = config.build_ctrl_bin
 
 def hazapp(bs, b):
     for bi in bs:
@@ -75,15 +73,13 @@ def list_apps():
 
 def tmenu_run():
     pmap = list_apps()
-    with open("/tmp/mxcmd.out", "w") as f:
-        for k in pmap.keys():
-            f.write(k)
-            f.write("\n")
-    sel = subprocess.check_output("fzf < /tmp/mxcmd.out", shell=True)
-    subprocess.run(pmap[sel.decode().strip()])
+    sela = util.tmenu_select(pmap)
+    if sela == None:
+        return
+    util.fork(pmap[sela].split(" ")) 
 
 def dmenu_run():
-    subprocess.Popen(["/bin/sh", "-c", ctrl_bin("tmenu_run")])
+    util.sh(config.pop_term(config.ctrl_bin(["tmenu_run"])))
 
 def list_proc():
     pmap = {}
@@ -95,16 +91,12 @@ def list_proc():
 
 def tmenu_kill_proc():
     pmap = list_proc()
-    with open("/tmp/mxcmd.out", "w") as f:
-        for k in pmap.keys():
-            f.write(k)
-            f.write("\n")
-    output = subprocess.check_output("fzf < /tmp/mxcmd.out", shell=True)
+    output = util.tmenu_select(omap) 
     for x in output:
         for y in x:
             logger.info("tmenu_kill_proc, kill", y)
             subprocess.call(["kill", pmap[y]])
 
 def dmenu_kill_proc():
-    subprocess.Popen(["/bin/sh", "-c", ctrl_bin("tmenu_kill_proc")])
+    util.sh(config.pop_term(config.ctrl_bin(["tmenu_kill_proc"])))
 
