@@ -1,9 +1,16 @@
-import util
-import config
-import control_x11_min
+from os import getenv, walk, remove, link, listdir
+from os.path import exists, join
+from os.path import split as psplit
+from json import load, dump
+from subprocess import run, Popen, PIPE
+from re import compile
+from util import Logger, tmenu_select, sh, fork, httprequest, find
+from io import open
+from config import ctrl_bin, pop_term, Cfg, wminfo
+from time import time
+from random import Random
+from control_x11_min import Cmds as Xcmd
 
-Xcmd = control_x11_min.Funs
-Cfg = config.Cfg
 LogoutCmds = {
     'bspwm': ['bspc', 'quit'] ,
     'lg3d': ['bspc', 'quit'] ,
@@ -13,17 +20,20 @@ LogoutCmds = {
 }
 
 def tmenu_exit():
-    wminf = util.wminfo()
+    wminf = wminfo()
+    print(wminf)
     exit_with = {
-        'lock': xcmd["scr_lock_cmd"](),
-        'logout': LogoutCmds[wminf.wm.lower()],
+        'lock': Xcmd["scr_lock"],
+        'logout': LogoutCmds[wminf["wm"]],
         'reboot': ['systemctl', 'reboot'] ,
         'shutdown': ['systemctl', 'poweroff', '-i'] ,
         'hibernate': ['systemctl', 'hibernate'] ,
         'suspend': ['systemctl', 'suspend'] ,
     }
-    opt = util.tmenu_select(exit_with)
-    util.sh(exit_with[opt])
+    opt = tmenu_select(exit_with)
+    if opt == None:
+        return
+    sh(exit_with[opt])
 
 def dmenu_exit():
-    util.sh(config.pop_term(config.ctrl_bin(['tmenu_exit'])))
+    sh(pop_term(ctrl_bin(['tmenu_exit'])))

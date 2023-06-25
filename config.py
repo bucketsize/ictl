@@ -1,10 +1,13 @@
-import os
-import json
-import logging
+from os import getenv
+from os.path import exists
+from json import load
+from subprocess import run, Popen, PIPE
+from re import compile
+from util import Logger
 
-logger = logging.getLogger()
+logger = Logger()
 
-Home = os.getenv("HOME")
+Home = getenv("HOME")
 Cfg = {
     "pop_terms" : {
         "alacritty": ['/usr/bin/alacritty', '--class', 'Popeye', '-o', 'window.dimensions.columns=64', '-o', 'window.dimensions.lines=16', '-e'],
@@ -18,25 +21,35 @@ Cfg = {
     }
 }
 
-if os.path.exists(Home + "/.config/mxctl/config.json"):
+if exists(Home + "/.config/mxctl/config.json"):
     logger.info("config << ~/.config/mxctl/config.json")
     with open(Home + "/.config/mxctl/config.json") as f:
-        _cfg = json.load(f)
+        _cfg = load(f)
 else:
     logger.info("config << default")
     with open("config.json") as f:
-        _cfg = json.load(f)
+        _cfg = load(f)
 
 Cfg.update(_cfg)   
 
 def get_renderer():
-    wl_dev = os.getenv("WAYLAND_DISPLAY")
+    wl_dev = getenv("WAYLAND_DISPLAY")
     if wl_dev:
         print("get_renderer:", wl_dev)
         return "wayland"
     else:
         print("get_renderer:", "xorg")
         return "xorg"
+
+wmre = compile("Name:\s+(\w+)")
+def wminfo() -> {}:
+    h = run(["wmctrl", "-m"], stdout=subprocess.PIPE)
+    wm = None
+    for line in h.stdout.decode().splitlines():
+        wm = wmre.match(line).groups()[0]
+        if wm != None:
+            break
+    return {"wm": wm}
 
 def pop_term(cmd: [str]) -> [str]:
     pt = Cfg["pop_term"][get_renderer()]

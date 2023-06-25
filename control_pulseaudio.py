@@ -1,56 +1,55 @@
-import os
-import math
-import random
-import os
-import subprocess
+from os import getenv, walk
+from os.path import exists
+from os.path import split as psplit
+from json import load, dump
+from subprocess import run, Popen, PIPE
+from re import compile
+from util import Logger, tmenu_select, sh, fork
+from io import open
+from config import ctrl_bin, pop_term, Cfg
+from time import time
+from random import Random
 
-import time
-import config 
-import util
+logger = Logger()
 
-logger = util.Logger()
-rnd = random.Random()
-rnd.seed(int(time.time()) + 19)
+rnd = Random()
+rnd.seed(int(time()) + 19)
 
-Cfg = config.Cfg
+Pactl = "/usr/bin/pactl"
 
-_PA_CMD = {
-    "vol_up": "pactl set-sink-volume @DEFAULT_SINK@ +10%",
-    "vol_down": "pactl set-sink-volume @DEFAULT_SINK@ -10%",
-    "vol_mute": "pactl set-sink-mute   @DEFAULT_SINK@ toggle",
-    "vol_unmute": "pactl set-sink-mute   @DEFAULT_SINK@ toggle",
+PactlCmd = {
+    'vol_up': [Pactl, 'set-sink-volume', '@DEFAULT_SINK@', '+10%'] ,
+    'vol_down': [Pactl, 'set-sink-volume', '@DEFAULT_SINK@', '-10%'] ,
+    'vol_mute': [Pactl, 'set-sink-mute', '@DEFAULT_SINK@', 'toggle'] ,
+    'vol_unmute': [Pactl, 'set-sink-mute', '@DEFAULT_SINK@', 'toggle'] ,
 }
 
-def pa_sinks():
-    iv = []
-    subprocess.run(["pactl", "list", "sinks"], capture_output=True)
-    .stdout.decode().split("\n")
-    for line in output:
+def pa_sinks() -> {}:
+    v = {}
+    h = run([Pactl, "list", "sinks"], stdout=PIPE)
+    for line in h.stdout.decode().splitlines():
         if "Name: " in line:
-            iv.append(line.split("Name: ")[1])
-    return iv
+            name = line.split("Name: ")[1]
+            v[name] = name
+    return v
 
-class Fn:
-    def tmenu_select_pa_sinks(self):
-        opts = [v[0] for v in pa_sinks().values()]
-        opss = "\n".join(opts)
-        subprocess.run(["echo", opss], capture_output=True)
-        .stdout.decode().split("\n")
-        id = output[0]
-        if id:
-            subprocess.run(["pactl", "set-default-sink", id], capture_output=True)
+def tmenu_select_pa_sinks():
+    sinks = pa_sinks()
+    id = tmenu_select(sinks)
+    if id:
+        sh([Pactl, "set-default-sink", id])
 
-    def dmenu_select_pa_sinks(self):
-        subprocess.run(["pop_term", ctrl_bin("tmenu_select_pa_sinks")], capture_output=True)
+def dmenu_select_pa_sinks():
+    sh(pop_term(ctrl_bin(["tmenu_audio_sink"])))
 
-    def vol_up(self):
-        subprocess.run(_PA_CMD["vol_up"], shell=True)
+def vol_up():
+    sh(PactlCmd["vol_up"])
 
-    def vol_down(self):
-        subprocess.run(_PA_CMD["vol_down"], shell=True)
+def vol_down():
+    sh(PactlCmd["vol_down"])
 
-    def vol_mute(self):
-        subprocess.run(_PA_CMD["vol_mute"], shell=True)
+def vol_mute():
+    sh(PactlCmd["vol_mute"])
 
-    def vol_unmute(self):
-        subprocess.run(_PA_CMD["vol_unmute"], shell=True)
+def vol_unmute():
+    sh(PactlCmd["vol_unmute"])

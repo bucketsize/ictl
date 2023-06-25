@@ -1,29 +1,36 @@
-import os
-import io
-import subprocess
-import logging
+from os import getenv, walk, remove, link, listdir
+from os.path import exists, join
+from os.path import split as psplit
+from json import load, dump
+from subprocess import run, Popen, PIPE
+from re import compile
+from util import Logger, tmenu_select, sh, fork, httprequest, find
+from io import open
+from config import ctrl_bin, pop_term, Cfg
+from time import time
+from random import Random
 
-logger = logging.getLogger()
+logger = Logger()
 
 def brightness(delta):
     logger.info("brightness", delta)
-    bf = os.listdir("/sys/class/backlight")
+    bf = listdir("/sys/class/backlight")
     if bf:
         bf = bf[0]
-        max = int(io.open(f"/sys/class/backlight/{bf}/max_brightness", "r").read())
-        cur = int(io.open(f"/sys/class/backlight/{bf}/brightness", "r").read())
+        max = int(open(f"/sys/class/backlight/{bf}/max_brightness", "r").read())
+        cur = int(open(f"/sys/class/backlight/{bf}/brightness", "r").read())
         tar = int(cur + delta * max / 100)
         if tar > max:
             tar = max
         if tar < 0:
             tar = cur
         logger.info("brightness", delta, bf, cur, tar, max)
-        with io.open(f"/sys/class/backlight/{bf}/brightness", "w") as h:
+        with open(f"/sys/class/backlight/{bf}/brightness", "w") as h:
             h.write(str(tar))
 
 def brightness_up():
-    brightness(Cfg.lux_step)
+    brightness(Cfg["lux_step"])
 
 def brightness_down():
-    brightness(-Cfg.lux_step)
+    brightness(-Cfg["lux_step"])
 

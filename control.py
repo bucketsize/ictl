@@ -1,29 +1,54 @@
 #!/usr/bin/env python
 
 import os
-import sys
-import control_app as capp 
-import control_cmd as ccmd 
-import control_exit as cexe 
-import control_wallpaper as cwall
-import control_x11 as cx11 
+from sys import argv, exit 
+
+from control_app import tmenu_kill_proc, tmenu_run
+from control_cmd import tmenu_misc
+from control_exit import tmenu_exit
+from control_wallpaper import tmenu_set_wallpaper
+from control_x11 import tmenu_setup_video, tmenu_select_window
+from control_pulseaudio import tmenu_select_pa_sinks
+
+from control_app import dmenu_kill_proc, dmenu_run
+from control_cmd import dmenu_misc
+from control_exit import dmenu_exit
+from control_wallpaper import dmenu_set_wallpaper
+from control_x11 import dmenu_setup_video, dmenu_select_window
+from control_pulseaudio import dmenu_select_pa_sinks, vol_unmute, vol_mute, vol_down, vol_up
 
 fmapper = {
-    "dmenu_run": capp.dmenu_run,
-    "tmenu_run": capp.tmenu_run,
-    "dmenu_kill": capp.dmenu_run,
-    "tmenu_kill": capp.tmenu_run,
-    "dmenu_set_wallpaper": cwall.dmenu_set_wallpaper,
-    "tmenu_set_wallpaper": cwall.dmenu_set_wallpaper,
-    "dmenu_exit": cexe.dmenu_exit,
-    "tmenu_exit": cexe.tmenu_exit,
-    "tmenu_setup_video": cx11.tmenu_setup_video
+    "tmenu_run": tmenu_run,
+    "tmenu_kill": tmenu_kill_proc,
+    "tmenu_wallpaper": tmenu_set_wallpaper,
+    "tmenu_exit": tmenu_exit,
+    "tmenu_video": tmenu_setup_video,
+    "tmenu_window": tmenu_select_window,
+    "tmenu_audio_sink": tmenu_select_pa_sinks,
+    "dmenu_run": dmenu_run,
+    "dmenu_kill": dmenu_kill_proc,
+    "dmenu_wallpaper": dmenu_set_wallpaper,
+    "dmenu_exit": dmenu_exit,
+    "dmenu_video": dmenu_setup_video,
+    "dmenu_window": dmenu_select_window,
+    "dmenu_audio_sink": dmenu_select_pa_sinks,
+    "vol_up": vol_up,
+    "vol_down": vol_down,
+    "vol_mute": vol_mute,
+    "vol_unmute": vol_unmute,
 }
 
+def print_help():
+    print("usage:")
+    for k,_ in fmapper.items():
+        print('\t',k)
+
 if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        sys.exit(1)
-    if fmapper.get(sys.argv[1]) == None:
-        sys.exit(1)
-    fmapper[sys.argv[1]]()
+    if len(argv) < 2:
+        print_help()
+        exit(1)
+    if fmapper.get(argv[1]) == None:
+        print_help()
+        exit(1)
+    fmapper[argv[1]]()
     

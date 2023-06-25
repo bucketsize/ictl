@@ -1,4 +1,4 @@
-import util 
+from util import mksh
 
 Cmds = {
     'kb_led_on': ['xset', 'led', 'on'],
@@ -16,17 +16,17 @@ Cmds = {
 }
 
 Funs = {
-    'kb_led_on'     :       util.mksh(Cmds['kb_led_on'  ]),
-    'kb_led_off'    :       util.mksh(Cmds['kb_led_off' ]),
-    'win_left'      :       util.mksh(Cmds['win_left'   ]),
-    'win_right'     :       util.mksh(Cmds['win_right'  ]),
-    'win_max'       :       util.mksh(Cmds['win_max'    ]),
-    'win_unmax'     :       util.mksh(Cmds['win_unmax'  ]),
-    'win_big'       :       util.mksh(Cmds['win_big'    ]),
-    'win_small'     :       util.mksh(Cmds['win_small'  ]),
-    'scr_cap'       :       util.mksh(Cmds['scr_cap'    ]),
-    'scr_cap_sel'   :       util.mksh(Cmds['scr_cap_sel']),
-    'scr_lock'      :       util.mksh(Cmds['scr_lock'   ]),
-    'autolockd_xautolock':  util.mksh(Cmds['autolockd_xautolock'])
+    'kb_led_on'     :       mksh(Cmds['kb_led_on'  ]),
+    'kb_led_off'    :       mksh(Cmds['kb_led_off' ]),
+    'win_left'      :       mksh(Cmds['win_left'   ]),
+    'win_right'     :       mksh(Cmds['win_right'  ]),
+    'win_max'       :       mksh(Cmds['win_max'    ]),
+    'win_unmax'     :       mksh(Cmds['win_unmax'  ]),
+    'win_big'       :       mksh(Cmds['win_big'    ]),
+    'win_small'     :       mksh(Cmds['win_small'  ]),
+    'scr_cap'       :       mksh(Cmds['scr_cap'    ]),
+    'scr_cap_sel'   :       mksh(Cmds['scr_cap_sel']),
+    'scr_lock'      :       mksh(Cmds['scr_lock'   ]),
+    'autolockd_xautolock':  mksh(Cmds['autolockd_xautolock'])
 }
 

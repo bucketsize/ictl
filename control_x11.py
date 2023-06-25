@@ -1,20 +1,19 @@
-import os
-import math
-import random
-import os
-import subprocess
-import re
+from os import getenv, walk, remove, link, listdir
+from os.path import exists, join
+from os.path import split as psplit
+from json import load, dump
+from subprocess import run, Popen, PIPE
+from re import compile
+from util import Logger, tmenu_select, sh, fork, httprequest, find
+from io import open
+from config import ctrl_bin, pop_term, Cfg
+from time import time
+from random import Random
 
+logger = Logger()
+rnd = Random()
+rnd.seed(int(time()) + 19)
 
-import time
-import config 
-import util
-
-logger = util.Logger()
-rnd = random.Random()
-rnd.seed(int(time.time()) + 19)
-
-Cfg = config.Cfg
 DISPLAYS = Cfg["displays"]
 DISPLAY_ON = """
     xrandr \
@@ -31,7 +30,7 @@ DISPLAY_OFF = """
 """
 
 def xrandr_info():
-    h = subprocess.run(["/usr/bin/xrandr", "-q"], stdout=subprocess.PIPE)
+    h = run(["/usr/bin/xrandr", "-q"], stdout=PIPE)
     ots = {}
     ot = None
     for line in h.stdout.decode().splitlines():
@@ -89,7 +88,7 @@ def setup_video():
     _, outgrid_ctl = xrandr_configs()
     for d in outgrid_ctl.values():
         if d["active"]:
-            util.sh(d["on"])
+            sh(d["on"])
 
 # -- local function get2dElem(t, i, j)
 # -- 	if t[i] == nil then
@@ -113,30 +112,29 @@ def setup_video():
 
 def tmenu_setup_video():
     _, vgridctl = xrandr_configs()
-    opt = util.tmenu_select(vgridctl)
+    opt = tmenu_select(vgridctl)
     if opt == None:
         return 
-    util.sh(vgridctl[opt].on)
+    sh(vgridctl[opt]["on"])
 
 def dmenu_setup_video():
-    util.sh(config.pop_term(config.ctrl_bin(["tmenu_setup_video"])))
+    sh(pop_term(ctrl_bin(["tmenu_video"])))
 
-
-reps = re.compile("(\w+)\s+(\d+)\s+([\w_\-]+)\s+(.*)")
+reps = compile("(\w+)\s+(\d+)\s+([\w_\-]+)\s+(.*)")
 
 def tmenu_select_window():
     ws = {}
-    pc = subprocess.run("wmctrl -l", stdout=subprocess.PIPE)
-    plines = pc.stdout.decode().splitlines()
-    for i in plines:
-        id,wx,name = reps.match(i).groups()
-        print(id,wx,name)
-        ws[name] = id
-    wid = util.tmenu_select(ws)
-    util.sh(["wmctrl", "-ia", ws[wid]])
+    pc = run(["/usr/bin/wmctrl", "-l"], stdout=PIPE)
+    for i in pc.stdout.decode().splitlines():
+        id,wx,name,titl = reps.match(i).groups()
+        ws[name+"::"+titl] = id
+    wid = tmenu_select(ws)
+    if wid == None:
+        return 
+    sh(["/usr/bin/wmctrl", "-ia", ws[wid]])
 
 def dmenu_select_window():
-    util.sh(config.pop_term(config.ctrl_bin(["tmenu_select_window"])))
+    sh(pop_term(ctrl_bin(["tmenu_window"])))
 
 def scr_lock_if():
     iv = None

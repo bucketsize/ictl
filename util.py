@@ -1,8 +1,14 @@
-import os
-import time
-import subprocess
-import http.client
-import urllib.request
+from os import getenv, walk, remove, link, listdir
+from os.path import exists, join
+from os.path import split as psplit
+from json import load, dump
+from subprocess import run, Popen, PIPE, check_output
+from re import compile
+from io import open
+from time import time,asctime,sleep
+from random import Random
+from urllib.request import urlparse
+from http.client import HTTPSConnection
 
 class Logger:
     def info(self, m):
@@ -11,17 +17,17 @@ class Logger:
 logger = Logger()
 
 def find(path) -> [(str, str)]:
-    for root, _, files in os.walk(path):
+    for root, _, files in walk(path):
         for file in files:
-            yield file, os.path.join(root, file)
+            yield file, join(root, file)
             
 def randstr(n: int):
-    return time.asctime().replace(":", "_").replace(" ", "_") 
+    return asctime().replace(":", "_").replace(" ", "_") 
 
 def httprequest(method, url, headers={}, body=None):
-    urls = urllib.request.urlparse(url)
+    urls = urlparse(url)
     print(url, urls)
-    conn = http.client.HTTPSConnection(urls.netloc)
+    conn = HTTPSConnection(urls.netloc)
     conn.request(method, urls.path+'?'+urls.query,urls.params, headers)
     res = conn.getresponse()
     return res.status, res.headers, res.read()
@@ -31,21 +37,22 @@ def tmenu_select(omap):
         for k in omap.keys():
             f.write(k)
             f.write("\n")
+            print("tmenu_select, opt:", k)
     try:
-        sel = subprocess.check_output("fzf < /tmp/mxcmd.out", shell=True)
-    except: 
+        sel = check_output("fzf < /tmp/mxcmd.out", shell=True)
+    except:
         return None
     logger.info("tmenu_select: %s" % sel)
     return sel.decode().strip()
 
 def sh(cmd: [str]):
     print("#sh: ", cmd)
-    subprocess.run(cmd, stdout=subprocess.PIPE)
+    run(cmd, stdout=PIPE)
 
 def mksh(cmd: [str]):
-    return lambda cmd: subprocess.run(cmd, stdout=subprocess.PIPE)
+    return lambda cmd: run(cmd, stdout=PIPE)
 
 def fork(cmd: [str]):
     print("#fork: ", cmd)
-    subprocess.Popen(cmd, stdout=subprocess.PIPE)
-    time.sleep(2)
+    Popen(cmd, stdout=PIPE)
+    sleep(2)
