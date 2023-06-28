@@ -54,5 +54,5 @@ def mksh(cmd: [str]):
 
 def fork(cmd: [str]):
     print("#fork: ", cmd)
-    Popen(cmd, stdout=PIPE)
+    Popen(["nohup"] + cmd, stdout=PIPE)
     sleep(2)

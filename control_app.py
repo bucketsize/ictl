@@ -1,9 +1,9 @@
 from os import getenv, walk
-from os.path import exists
+from os.path import exists, join
 from os.path import split as psplit
 from json import load, dump
 from subprocess import run, Popen, PIPE
-from re import compile
+from re import compile, match
 from util import Logger, tmenu_select, sh, fork
 from io import open
 from config import ctrl_bin, pop_term, Cfg
@@ -51,10 +51,10 @@ def find() -> {}:
         for root, _, files in walk(path):
             for file in files:
                 if file.endswith(".desktop"):
-                    for d in parsedesktopfile(os.path.join(root, file)):
+                    for d in parsedesktopfile(join(root, file)):
                         apps[d['bin']] = d['exec'] 
                 else:
-                    apps[file] = os.path.join(root, file)
+                    apps[file] = join(root, file)
     logger.info("discovered [apps+exes] %s targets" % len(apps))
     with open(appcache, 'w') as f:
         dump(apps, f)
