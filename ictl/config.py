@@ -1,13 +1,14 @@
 from os import getenv
-from os.path import exists
+from os.path import exists, join
 from json import load
 from subprocess import run, Popen, PIPE
 from re import compile
-from util import Logger
+from ictl.util import Logger
 
 logger = Logger()
 
 Home = getenv("HOME")
+print("Home:", Home)
 Cfg = {
     "pop_terms" : {
         "alacritty": ['/usr/bin/alacritty', '--class', 'Popeye', '-o', 'window.dimensions.columns=64', '-o', 'window.dimensions.lines=16', '-e'],
@@ -21,12 +22,10 @@ Cfg = {
     }
 }
 
-if exists(Home + "/.config/mxctl/config.json"):
-    logger.info("config << ~/.config/mxctl/config.json")
+if exists(Home + "/.config/ictl/config.json"):
     with open(Home + "/.config/mxctl/config.json") as f:
         _cfg = load(f)
 else:
-    logger.info("config << default")
     with open("config.json") as f:
         _cfg = load(f)
 
@@ -59,4 +58,4 @@ def pop_term(cmd: [str]) -> [str]:
     return Cfg['pop_terms'][pt] + cmd
 
 def ctrl_bin(cmd: [str]) -> [str]:
-    return Cfg['ctrl_bin'] + cmd
+    return [Home + "/.local/bin/ictl"]+ cmd

@@ -1,4 +1,4 @@
-from util import mksh
+from ictl.util import mksh
 
 Cmds = {
     'kb_led_on': ['xset', 'led', 'on'],

@@ -3,19 +3,19 @@
 import os
 from sys import argv, exit 
 
-from control_app import tmenu_kill_proc, tmenu_run
-from control_cmd import tmenu_misc
-from control_exit import tmenu_exit
-from control_wallpaper import tmenu_set_wallpaper
-from control_x11 import tmenu_setup_video, tmenu_select_window
-from control_pulseaudio import tmenu_select_pa_sinks
+from ictl.control_app import tmenu_kill_proc, tmenu_run
+from ictl.control_cmd import tmenu_misc
+from ictl.control_exit import tmenu_exit
+from ictl.control_wallpaper import tmenu_set_wallpaper
+from ictl.control_x11 import tmenu_setup_video, tmenu_select_window
+from ictl.control_pulseaudio import tmenu_select_pa_sinks
 
-from control_app import dmenu_kill_proc, dmenu_run
-from control_cmd import dmenu_misc
-from control_exit import dmenu_exit
-from control_wallpaper import dmenu_set_wallpaper
-from control_x11 import dmenu_setup_video, dmenu_select_window
-from control_pulseaudio import dmenu_select_pa_sinks, vol_unmute, vol_mute, vol_down, vol_up
+from ictl.control_app import dmenu_kill_proc, dmenu_run
+from ictl.control_cmd import dmenu_misc
+from ictl.control_exit import dmenu_exit
+from ictl.control_wallpaper import dmenu_set_wallpaper
+from ictl.control_x11 import dmenu_setup_video, dmenu_select_window
+from ictl.control_pulseaudio import dmenu_select_pa_sinks, vol_unmute, vol_mute, vol_down, vol_up
 
 fmapper = {
     "tmenu_run": tmenu_run,

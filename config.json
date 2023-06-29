@@ -6,7 +6,6 @@
     "~/.local/share/applications"
   ],
   "menu_sel": ["fzf"],
-  "ctrl_bin": ["/home/jb/ictl/control.py"],
   "pop_term": {"xorg":"alacritty", "wayland":"alacritty"},
   "lux_step": 2,
 

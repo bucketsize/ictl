@@ -4,9 +4,9 @@ from os.path import split as psplit
 from json import load, dump
 from subprocess import run, Popen, PIPE
 from re import compile, match
-from util import Logger, tmenu_select, sh, fork
+from ictl.util import Logger, tmenu_select, sh, fork
 from io import open
-from config import ctrl_bin, pop_term, Cfg
+from ictl.config import ctrl_bin, pop_term, Cfg
 
 logger = Logger()
 

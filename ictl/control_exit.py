@@ -4,12 +4,12 @@ from os.path import split as psplit
 from json import load, dump
 from subprocess import run, Popen, PIPE
 from re import compile
-from util import Logger, tmenu_select, sh, fork, httprequest, find
+from ictl.util import Logger, tmenu_select, sh, fork, httprequest, find
 from io import open
-from config import ctrl_bin, pop_term, Cfg, wminfo
 from time import time
 from random import Random
-from control_x11_min import Cmds as Xcmd
+from ictl.config import ctrl_bin, pop_term, Cfg, wminfo
+from ictl.control_x11_min import Cmds as Xcmd
 
 LogoutCmds = {
     'bspwm': ['bspc', 'quit'] ,
