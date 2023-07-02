@@ -21,7 +21,7 @@ setuptools.setup(
         'Operating System :: POSIX :: Linux',
     ],
     packages = ['ictl'],
-    scripts = ['ictl/__main__.py'],
+    scripts = ['bin/ictl'],
     include_package_data=True,
     python_requires = ">=3.6"
 )

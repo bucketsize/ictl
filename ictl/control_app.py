@@ -11,7 +11,7 @@ from ictl.config import ctrl_bin, pop_term, Cfg
 logger = Logger()
 
 USER = getenv("USER")
-appcache = "/tmp/appcache.mxctl." + USER + ".json"
+appcache = "/tmp/appcache.mxctl.%s.json" % (USER)
 
 def hazapp(bs, b):
     for bi in bs:
