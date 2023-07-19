@@ -13,36 +13,23 @@ logger = Logger()
 USER = getenv("USER")
 appcache = "/tmp/appcache.mxctl.%s.json" % (USER)
 
-def hazapp(bs, b):
-    for bi in bs:
-        if bi['exec'] == b['exec']:
-            return True
-    return False
-
-def buildapp(tag, bs, b):
-    if b['name'] and b['exec'] and not hazapp(bs, b):
-        bs.append(b)
-
 def parsedesktopfile(f: str) -> [dict]:
     with open(f, "r") as h:
-        bs, b = [], {}
+        n,e,bs = [],[],[]
         i = 0
         for l in h:
-            if match("^%[(.+)%]", l):
-                buildapp(str(i), bs, b)
-                b = {'name': "na", 'exec': "na", 'bin': "na"}
-                i += 1
-            else:
-                name = match("^Name=([\w\s\-_\/]+)", l)
-                if name:
-                    b['name'] = name.group(1)
-                else:
-                    exec = match("^Exec=(.+)", l)
-                    if exec:
-                        b['exec'] = exec.group(1).strip()
-                        p = psplit(f)[-1].split(".")[0]
-                        b['bin'] = p if p else b['exec']
-        buildapp(str(i + 1), bs, b)
+            name = match("^Name=([\w\s\-_\/]+)", l)
+            if name:
+                n.append(name.group(1).strip())
+            exec = match("^Exec=(.+)", l)
+            if exec:
+                e.append(exec.group(1).strip())
+        n0 = n[0]
+        for exe in e:
+            arg = exe.split("/")[-1]
+            nam = "{} - {}".format(n0, arg) 
+            bs.append({"name": nam, "exec": exe, "bin": nam})
+        print("parsedesktopfile: {} - {}".format(f, bs))
     return bs
 
 def find() -> {}:
@@ -75,7 +62,11 @@ def tmenu_run():
     sela = tmenu_select(pmap)
     if sela == None:
         return
-    fork(pmap[sela].split(" ")) 
+    cmd = pmap[sela].split(" ")
+    if cmd[-1].startswith("%"):
+        fork(cmd[:-1])
+    else:
+        fork(cmd)
 
 def dmenu_run():
     sh(pop_term(ctrl_bin(["tmenu_run"])))
