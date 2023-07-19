@@ -23,13 +23,16 @@ Cfg = {
 }
 
 if exists(Home + "/.config/ictl/config.json"):
-    with open(Home + "/.config/mxctl/config.json") as f:
+    with open(Home + "/.config/ictl/config.json") as f:
         _cfg = load(f)
-else:
+elif exists("config.json"):
+    print("using cwd config.json")
     with open("config.json") as f:
         _cfg = load(f)
+else:
+    print("config.json missing, please create ~/.config/ictl/config.json")
 
-Cfg.update(_cfg)   
+Cfg.update(_cfg)
 
 def get_renderer():
     wl_dev = getenv("WAYLAND_DISPLAY")
