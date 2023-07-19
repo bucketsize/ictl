@@ -45,7 +45,7 @@ def get_renderer():
 
 wmre = compile("Name:\s+(\w+)")
 def wminfo() -> {}:
-    h = run(["wmctrl", "-m"], stdout=subprocess.PIPE)
+    h = run(["wmctrl", "-m"], stdout=PIPE)
     wm = None
     for line in h.stdout.decode().splitlines():
         wm = wmre.match(line).groups()[0]
