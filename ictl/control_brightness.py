@@ -13,7 +13,7 @@ from random import Random
 logger = Logger()
 
 def brightness(delta):
-    logger.info("brightness", delta)
+    print("brightness", delta)
     bf = listdir("/sys/class/backlight")
     if bf:
         bf = bf[0]
@@ -24,7 +24,7 @@ def brightness(delta):
             tar = max
         if tar < 0:
             tar = cur
-        logger.info("brightness", delta, bf, cur, tar, max)
+        print("brightness", delta, bf, cur, tar, max)
         with open(f"/sys/class/backlight/{bf}/brightness", "w") as h:
             h.write(str(tar))
 

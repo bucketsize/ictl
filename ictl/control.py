@@ -9,6 +9,7 @@ from ictl.control_exit import tmenu_exit
 from ictl.control_wallpaper import tmenu_set_wallpaper
 from ictl.control_x11 import tmenu_setup_video, tmenu_select_window
 from ictl.control_pulseaudio import tmenu_select_pa_sinks
+from ictl.control_brightness import brightness_up, brightness_down 
 
 from ictl.control_app import dmenu_kill_proc, dmenu_run
 from ictl.control_cmd import dmenu_misc
@@ -38,6 +39,8 @@ fmapper = {
     "vol_unmute": vol_unmute,
     "applywallpaper": applywallpaper,
     "setup_video": setup_video,
+    "brightness_up": brightness_up,
+    "brightness_down": brightness_down,
 }
 
 def print_help():

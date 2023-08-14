@@ -1,15 +1,22 @@
 import ictl.control_app as Ctl
-import ictl.control_x11 as X11 
+import ictl.control_x11 as Xx 
+import ictl.control_brightness as Xb 
+from time import sleep
 
-def test_findapps():
-   apps = Ctl.find()
+apps = Ctl.find()
+assert(len(apps) >  0)
+sleep(1)
 
-def test_parsedesktopfile():
-   app = Ctl.parsedesktopfile(nil, "tests/res/URxvtc.desktop")
+app = Ctl.parsedesktopfile("tests/res/URxvtc.desktop")
+sleep(1)
 
-# def test_tmenu_run():
-#    app = Ctl.tmenu_run()
+Xx.setup_video()
+sleep(1)
 
-X11.setup_video()
+Xb.brightness_down()
+sleep(1)
+
+Xb.brightness_up()
+sleep(1)
 
 
