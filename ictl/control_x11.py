@@ -37,7 +37,7 @@ def xrandr_info():
         logger.info("xrandr_info: %s" % line)
         otc = line.strip().split()[0]
         if "connected" in line:
-            logger.info("xrandr_info, parse connected %s" % otc)
+            logger.info("xrandr_info, parse (dis)connected %s" % otc)
             ot = otc
             if ots.get(ot) is None:
                 ots[ot] = {"modes": [], "name": ot}
@@ -52,42 +52,50 @@ def mk_key(l: [str]) -> str:
     return "_".join(l)
 
 def outgrid_config(outgrid, o):
+    vcfg = None
+    for cfg in Cfg['displays']:
+        if cfg['name'] == o['name']:
+            vcfg = cfg
+            break
+    print("#outgrid_config: ", vcfg)
     for m in o["modes"]:
         k = mk_key([o["name"], str(m["x"]),str(m["y"])])
-        logger.info("outgrid_config: %s" % k)
         if outgrid.get(k) is None:
             outgrid[k] = {"name": o["name"], "x": m["x"], "y": m["y"], "active": False, "on": "", "off": "", "modes":[]}
+        if vcfg and vcfg['mode']['y'] == m['y'] and vcfg['mode']['x'] == m['x']:
+            outgrid[k]['active'] = True
+        logger.info("#outgrid_config: %s, %s" % (k, outgrid[k]))
         outgrid[k]["modes"].append(m)
 
 def outgrid_controls_config(outgrid, outgrid_ctl, o):
     for m in o["modes"]:
         k = mk_key([o["name"], str(m["x"]), str(m["y"])])
-        logger.info("outgrid__controls_config: %s" % k)
+        oc = outgrid[k]
         if outgrid_ctl.get(k) is None:
-            outgrid_ctl[k] = {"name": o["name"], "active": False, "on": None, "off": None}
+            outgrid_ctl[k] = {"name": o["name"], "active": oc['active'], "on": None, "off": None}
         outgrid_ctl[k]["on" ] = (DISPLAY_ON % (o["name"], m["x"], m["y"], 0, 0, "")).split()
         outgrid_ctl[k]["off"] = (DISPLAY_OFF % o["name"]).split()
         if m["active"]:
             outgrid_ctl[k]["active" ] = True
+        logger.info("#outgrid__controls_config: %s, %s" % (k, outgrid_ctl[k]))
 
 
 def xrandr_configs():
     outputs = xrandr_info()
     outgrid = {}
     for otc, o in outputs.items():
-        logger.info("xrandr_configs, item %s, %s" % (otc, o["name"]))
+        logger.info("#xrandr_configs, item %s, %s" % (otc, o["name"]))
         outgrid_config(outgrid, o)
-    logger.info("xrandr_configs, outgrid: %s" % outgrid)
     outgrid_ctl = {}
     for o in outputs.values():
         outgrid_controls_config(outgrid, outgrid_ctl, o)
-    logger.info("xrandr_configs, outgrid_ctl: %s" % outgrid_ctl)
     return outgrid, outgrid_ctl
 
 def setup_video():
     _, outgrid_ctl = xrandr_configs()
     for d in outgrid_ctl.values():
         if d["active"]:
+            print("#setup_video:", d)
             sh(d["on"])
 
 # -- local function get2dElem(t, i, j)

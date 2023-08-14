@@ -3,7 +3,8 @@
     "/usr/local/bin",
     "/usr/share/applications",
     "/snap/bin",
-    "~/.local/share/applications"
+    "~/.local/share/applications",
+    "~/.local/bin"
   ],
   "menu_sel": ["fzf"],
   "pop_term": {"xorg":"alacritty", "wayland":"alacritty"},

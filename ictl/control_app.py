@@ -1,5 +1,5 @@
 from os import getenv, walk
-from os.path import exists, join
+from os.path import exists, join, expanduser
 from os.path import split as psplit
 from json import load, dump
 from subprocess import run, Popen, PIPE
@@ -11,7 +11,7 @@ from ictl.config import ctrl_bin, pop_term, Cfg
 logger = Logger()
 
 USER = getenv("USER")
-appcache = "/tmp/appcache.mxctl.%s.json" % (USER)
+appcache = "/tmp/appcache.ictl.%s.json" % (USER)
 
 def parsedesktopfile(f: str) -> [dict]:
     with open(f, "r") as h:
@@ -27,22 +27,25 @@ def parsedesktopfile(f: str) -> [dict]:
         n0 = n[0]
         for exe in e:
             arg = exe.split("/")[-1]
-            nam = "{} - {}".format(n0, arg) 
-            bs.append({"name": nam, "exec": exe, "bin": nam})
-        print("parsedesktopfile: {} - {}".format(f, bs))
+            if arg != None and arg.strip() == "":
+                print("parsedesktopfile, wierd entry:", exe)
+            else:
+                nam = "{} - {}".format(n0, arg) 
+                bs.append({"name": nam, "exec": exe, "bin": nam})
+                print("parsedesktopfile: {} - {}".format(f, nam))
     return bs
 
 def find() -> {}:
     apps = {}
     for path in Cfg["app_dirs"]:
-        for root, _, files in walk(path):
+        for root, _, files in walk(expanduser(path)):
             for file in files:
                 if file.endswith(".desktop"):
                     for d in parsedesktopfile(join(root, file)):
                         apps[d['bin']] = d['exec'] 
                 else:
                     apps[file] = join(root, file)
-    logger.info("discovered [apps+exes] %s targets" % len(apps))
+    print("discovered [apps+exes] %s targets" % len(apps))
     with open(appcache, 'w') as f:
         dump(apps, f)
     return apps

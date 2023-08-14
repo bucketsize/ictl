@@ -13,8 +13,8 @@ from ictl.control_pulseaudio import tmenu_select_pa_sinks
 from ictl.control_app import dmenu_kill_proc, dmenu_run
 from ictl.control_cmd import dmenu_misc
 from ictl.control_exit import dmenu_exit
-from ictl.control_wallpaper import dmenu_set_wallpaper
-from ictl.control_x11 import dmenu_setup_video, dmenu_select_window
+from ictl.control_wallpaper import dmenu_set_wallpaper, applywallpaper
+from ictl.control_x11 import dmenu_setup_video, dmenu_select_window, setup_video
 from ictl.control_pulseaudio import dmenu_select_pa_sinks, vol_unmute, vol_mute, vol_down, vol_up
 
 fmapper = {
@@ -36,6 +36,8 @@ fmapper = {
     "vol_down": vol_down,
     "vol_mute": vol_mute,
     "vol_unmute": vol_unmute,
+    "applywallpaper": applywallpaper,
+    "setup_video": setup_video,
 }
 
 def print_help():

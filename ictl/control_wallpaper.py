@@ -4,7 +4,7 @@ from os.path import split as psplit
 from json import load, dump
 from subprocess import run, Popen, PIPE
 from re import compile
-from ictl.util import Logger, tmenu_select, sh, fork, httprequest, find
+from ictl.util import Logger, tmenu_select, sh, fork, httprequest, find, randstr
 from io import open
 from ictl.config import ctrl_bin, pop_term, Cfg
 from time import time
@@ -29,19 +29,19 @@ urlr = {
     },
     "nasa": {
         "url": lambda: "https://api.nasa.gov/planetary/apod?api_key=cRFIBE5eZnucIQxhm3jJGJopmXDBTQsTkAQal6Qu&count=1",
-        "parse": lambda s: logger.info("TODO %s" % s)
+        "parse": lambda s: print("TODO %s" % s)
     }
 }
 
 def getwallpaper(provider='bing'):
-    logger.info("#getwallpaper provider %s" % provider)
+    print("#getwallpaper provider %s" % provider)
     pro = urlr[provider]
     status, _, body = httprequest("GET", pro["url"]())
-    logger.info("getwallpaper response: [%s] [%s]" % (status, body))
+    print("getwallpaper response: [%s] [%s]" % (status, body))
     if status != 200:
         return
     url, name = pro["parse"](body.decode())
-    logger.info("getwallpaper: [%s] [%s]" % (url, name))
+    print("getwallpaper: [%s] [%s]" % (url, name))
     status,_,body = httprequest("GET", url)
     with open(wlprs + name, "wb") as file:
         file.write(body)
@@ -52,9 +52,8 @@ def getwallpaper(provider='bing'):
 
 def selectwallpaper(dir):
     wps = listdir(dir)
-    if not wps:
-        return applywallpaper()
-    return join(dir, rnd.choice(wps))
+    if wps:
+        return join(dir, rnd.choice(wps))
 
 def applywallpaper():
     wp = None
@@ -66,7 +65,7 @@ def applywallpaper():
         wp = selectwallpaper(Home + "/" + Cfg["wallpapersdir"])
     else:
         wp = selectwallpaper(wlprs)
-    logger.info("applying wallpaper %s" % wp)
+    print("applying wallpaper %s" % wp)
     sh(["feh", "--bg-scale", wp])
 
 def tmenu_set_wallpaper():
