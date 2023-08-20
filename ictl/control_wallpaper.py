@@ -37,11 +37,11 @@ def getwallpaper(provider='bing'):
     print("#getwallpaper provider %s" % provider)
     pro = urlr[provider]
     status, _, body = httprequest("GET", pro["url"]())
-    print("getwallpaper response: [%s] [%s]" % (status, body))
+    print("#getwallpaper response: [%s] [%s]" % (status, body))
     if status != 200:
         return
     url, name = pro["parse"](body.decode())
-    print("getwallpaper: [%s] [%s]" % (url, name))
+    print("#getwallpaper: [%s] [%s]" % (url, name))
     status,_,body = httprequest("GET", url)
     with open(wlprs + name, "wb") as file:
         file.write(body)
