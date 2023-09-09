@@ -56,9 +56,12 @@ def selectwallpaper(dir):
         return join(dir, rnd.choice(wps))
 
 def applywallpaper():
-    wp = None
     if Cfg["wallpapermode"] == "new":
-        wp = getwallpaper()
+        try:
+            wp = getwallpaper()
+        except e as Exception:
+            print("could not get wallpaper", e)
+            wp = selectwallpaper(wlprs)
     elif Cfg["wallpapermode"] == "fixed":
         wp = Home + "/" + Cfg["wallpaperfixd"]
     elif Cfg["wallpapermode"] == "folder":

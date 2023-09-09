@@ -35,8 +35,8 @@ def parsedesktopfile(f: str) -> [dict]:
                 print("parsedesktopfile: {} - {}".format(f, nam))
     return bs
 
-def find() -> {}:
-    apps = {}
+
+def find_apps(apps={}) -> {}:
     for path in Cfg["app_dirs"]:
         for root, _, files in walk(expanduser(path)):
             for file in files:
@@ -45,14 +45,22 @@ def find() -> {}:
                         apps[d['bin']] = d['exec'] 
                 else:
                     apps[file] = join(root, file)
-    print("discovered [apps+exes] %s targets" % len(apps))
-    with open(appcache, 'w') as f:
-        dump(apps, f)
+    return apps
+
+fpre = compile('(\w+)\s+(\w+)\s+(.*)')
+def find_flatpaks(apps={}) -> {}:
+    h = run(["flatpak", "list"], stdout=PIPE)
+    for line in h.stdout.decode().splitlines():
+        m = fpre.match(line)
+        if m:
+            apps['fp>'+m.group(1)] = 'flatpak run '+m.group(2)
     return apps
 
 def list_apps():
+    apps = {}
     if not exists(appcache):
-        apps = find()
+        find_apps(apps)
+        find_flatpaks(apps)
         with open(appcache, 'w') as f:
             dump(apps, f)
     else:

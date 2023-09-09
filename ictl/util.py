@@ -20,7 +20,7 @@ def find(path) -> [(str, str)]:
     for root, _, files in walk(path):
         for file in files:
             yield file, join(root, file)
-            
+
 def randstr(n: int):
     return asctime().replace(":", "_").replace(" ", "_") 
 

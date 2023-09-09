@@ -10,7 +10,7 @@
   "pop_term": {"xorg":"alacritty", "wayland":"alacritty"},
   "lux_step": 2,
 
-  "wallpapermode": "folder",
+  "wallpapermode": "new",
   "wallpaperscache": ".wlprs", 
   "wallpaperfixd": "Pictures/wallpapertip_halo-master-chief-wallpaper_2221578.jpg",
   "wallpapersdir": "Pictures",
