@@ -49,7 +49,11 @@ def find_apps(apps={}) -> {}:
 
 fpre = compile('(\w+)\s+(\w+)\s+(.*)')
 def find_flatpaks(apps={}) -> {}:
-    h = run(["flatpak", "list"], stdout=PIPE)
+    try:
+        h = run(["flatpak", "list"], stdout=PIPE)
+    except Exception as e:
+        print(e)
+        return apps
     for line in h.stdout.decode().splitlines():
         m = fpre.match(line)
         if m:
