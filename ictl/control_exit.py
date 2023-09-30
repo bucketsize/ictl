@@ -16,6 +16,7 @@ LogoutCmds = {
     'lg3d': ['bspc', 'quit'] ,
     'i3wm': ['i3-msg', 'exit'] ,
     'openbox': ['openbox', '--exit'] ,
+    'Openbox': ['openbox', '--exit'] ,
     'xmonad': [''] ,
 }
 
