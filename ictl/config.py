@@ -43,13 +43,14 @@ def get_renderer():
         print("get_renderer:", "xorg")
         return "xorg"
 
-wmre = compile("Name:\s+(\w+)")
+wm_list = ['bspwm', 'openbox', 'gnome-shell', 'fluxbox', 'mutter', 'weston' ,'qtile', 'sway', 'hyprland']
 def wminfo() -> {}:
-    h = run(["wmctrl", "-m"], stdout=PIPE)
+    h = run(["ps", "-e"], stdout=PIPE)
     wm = None
     for line in h.stdout.decode().splitlines():
-        wm = wmre.match(line).groups()[0]
-        if wm != None:
+        _wm = line.split()[-1]
+        if _wm in wm_list:
+            wm=_wm
             break
     return {"wm": wm}
 
