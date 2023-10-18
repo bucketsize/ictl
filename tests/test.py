@@ -1,8 +1,8 @@
-import ictl.control_app as Ctl
 import ictl.config as Con 
-import ictl.control_x11 as Xx 
-import ictl.control_brightness as Xb 
-import ictl.control_wallpaper as Xw  
+import ictl.app as Ctl
+import ictl.x11 as Xx 
+import ictl.brightness as Xb 
+import ictl.wallpaper as Xw  
 from time import sleep
 
 apps = Ctl.find_apps()

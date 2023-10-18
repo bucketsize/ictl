@@ -9,7 +9,7 @@ from io import open
 from time import time
 from random import Random
 from ictl.config import ctrl_bin, pop_term, Cfg, wminfo
-from ictl.control_x11_min import Cmds as Xcmd
+from ictl.x11_min import Cmds as Xcmd
 
 LogoutCmds = {
     'bspwm': ['bspc', 'quit'] ,

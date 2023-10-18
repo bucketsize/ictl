@@ -9,9 +9,9 @@ from io import open
 from time import time
 from random import Random
 from ictl.config import ctrl_bin, pop_term, Cfg
-from ictl.control_x11_min import Funs
-from ictl.control_x11 import tmenu_setup_video
-from ictl.control_wallpaper import tmenu_set_wallpaper
+from ictl.x11_min import Funs
+from ictl.x11 import tmenu_setup_video
+from ictl.wallpaper import tmenu_set_wallpaper
 
 misc = {
     "kb led on": Funs["kb_led_on"],

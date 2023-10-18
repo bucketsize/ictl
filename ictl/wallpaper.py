@@ -9,6 +9,8 @@ from io import open
 from ictl.config import ctrl_bin, pop_term, Cfg
 from time import time
 from random import Random
+from sys import argv
+from ictl.config import get_renderer
 
 logger = Logger()
 rnd = Random()
@@ -69,7 +71,15 @@ def applywallpaper():
     else:
         wp = selectwallpaper(wlprs)
     print("applying wallpaper %s" % wp)
-    sh(["feh", "--bg-scale", wp])
+    applywallpaperCmd(wp)
+
+def applywallpaperCmd(wp):
+    r = get_renderer()
+    if r.find('wayland') > -1:
+        sh(["killall", "-q","swaybg"])
+        fork(["swaybg", "-m", "center", "-i", wp])
+    else:
+        sh(["feh", "--bg-scale", wp])
 
 def tmenu_set_wallpaper():
     wps = {}
@@ -77,7 +87,15 @@ def tmenu_set_wallpaper():
         wps[k] = v
     sel = tmenu_select(wps)
     if sel:
-        sh(["feh", "--bg-scale", wps[sel]])
+        applywallpaperCmd(wps[sel])
 
 def dmenu_set_wallpaper():
     sh(pop_term(ctrl_bin(["tmenu_wallpaper"])))
+
+if __name__ == '__main__':
+    mf = {
+        '-t': tmenu_set_wallpaper,
+        '-d': dmenu_set_wallpaper,
+        '-get': getwallpaper,
+        '-set': applywallpaper}
+    mf[argv[1]]()

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from ictl.control import main
+from ictl.main import main
 from sys import exit
 
 if __name__ == '__main__':
