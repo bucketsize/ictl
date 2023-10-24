@@ -14,7 +14,7 @@ from ictl.brightness import brightness_up, brightness_down
 from ictl.app import dmenu_kill_proc, dmenu_run
 from ictl.cmd import dmenu_misc
 from ictl.exit import dmenu_exit
-from ictl.wallpaper import dmenu_set_wallpaper, applywallpaper
+from ictl.wallpaper import dmenu_set_wallpaper, applywallpaper, getwallpaper
 from ictl.x11 import dmenu_setup_video, dmenu_select_window, setup_video
 from ictl.pulseaudio import dmenu_select_pa_sinks, vol_unmute, vol_mute, vol_down, vol_up
 
