@@ -4,5 +4,5 @@
 - python >= 3.6
 
 ## install
-pip install ictl
+curl -L https://raw.githubusercontent.com/bucketsize/ictl/main/install | bash
 

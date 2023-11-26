@@ -1,0 +1,26 @@
+#!/bin/sh
+
+if [ "$(python -V)" == "" ]; then
+	echo "install python3, curl, unzip and retry."
+	exit -1
+fi
+
+gh_get() {
+	pk=$1
+	curl --retry 2 --retry-all-errors -kSL https://github.com/bucketsize/$pk/archive/refs/heads/main.zip -o $pk.zip
+
+	rm $pk-main* -rf
+	mv $pk $pk.$(date | md5sum | tr -d " -")
+
+	unzip $pk.zip
+	mv $pk-main $pk
+}
+
+[ -d ~/.bucketsize ] || mkdir -p ~/.bucketsize
+cd ~/.bucketsize
+
+echo "running in [$(pwd)]"
+
+gh_get ictl
+cd ictl
+pip3 install .
