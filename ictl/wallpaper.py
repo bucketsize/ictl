@@ -77,7 +77,7 @@ def applywallpaperCmd(wp):
     r = get_renderer()
     if r.find('wayland') > -1:
         sh(["killall", "-q","swaybg"])
-        fork(["swaybg", "-m", "center", "-i", wp])
+        fork(["swaybg", "-m", "fit", "-i", wp])
     else:
         sh(["feh", "--bg-scale", wp])
 
